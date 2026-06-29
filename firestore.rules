@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Denuncias: cualquiera puede leer las aprobadas, nadie escribe directo
+    match /denuncias/{id} {
+      allow read: if resource.data.estado == 'aprobada';
+      allow write: if false; // solo Cloud Functions (Admin SDK)
+    }
+
+    // Admins: solo el propio admin puede leer su doc
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}

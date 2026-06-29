@@ -1,0 +1,11 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Imágenes de denuncias: lectura pública, escritura solo via signed URL desde Functions
+    match /denuncias/{denunciaId}/{fileName} {
+      allow read: if true;
+      allow write: if false; // solo Cloud Functions genera signed URLs
+    }
+  }
+}
